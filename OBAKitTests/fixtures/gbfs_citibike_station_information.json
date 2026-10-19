@@ -1,0 +1,51 @@
+{
+  "data": {
+    "stations": [
+      {
+        "station_id": "66dc4b4c-0aca-11e7-82f6-3863bb44ef7c",
+        "name": "W 37 St & 5 Ave",
+        "short_name": "6398.06",
+        "lon": -73.98338988,
+        "lat": 40.75038009,
+        "region_id": "71",
+        "capacity": 60,
+        "rental_uris": {
+          "android": "https://bkn.lft.to/lastmile_qr_scan",
+          "ios": "https://bkn.lft.to/lastmile_qr_scan"
+        },
+        "is_charging": false
+      },
+      {
+        "station_id": "66dbc982-0aca-11e7-82f6-3863bb44ef7c",
+        "name": "E 47 St & Park Ave",
+        "short_name": "6584.12",
+        "lon": -73.97498696,
+        "lat": 40.75510267,
+        "region_id": "71",
+        "capacity": 81,
+        "rental_uris": {
+          "android": "https://bkn.lft.to/lastmile_qr_scan",
+          "ios": "https://bkn.lft.to/lastmile_qr_scan"
+        },
+        "is_charging": false
+      },
+      {
+        "station_id": "66dc8025-0aca-11e7-82f6-3863bb44ef7c",
+        "name": "Park Ave & E 42 St",
+        "short_name": "6432.09",
+        "lon": -73.977706,
+        "lat": 40.751873,
+        "region_id": "71",
+        "capacity": 83,
+        "rental_uris": {
+          "android": "https://bkn.lft.to/lastmile_qr_scan",
+          "ios": "https://bkn.lft.to/lastmile_qr_scan"
+        },
+        "is_charging": false
+      }
+    ]
+  },
+  "last_updated": 1792427479,
+  "ttl": 60,
+  "version": "2.3"
+}

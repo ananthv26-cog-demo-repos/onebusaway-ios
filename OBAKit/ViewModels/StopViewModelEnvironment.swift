@@ -98,11 +98,18 @@ protocol StopViewModelEnvironment: AnyObject {
     var currentRegion: Region? { get }
     var currentRegionName: String? { get }
     var isCellularDataRestricted: Bool { get }
+    /// Fetches docks for the last-mile card; `nil` where the region has no bikeshare system.
+    var bikeshareClient: BikeshareClient? { get }
 }
 
 // MARK: - Application conformance
 
 extension Application: StopViewModelEnvironment {
+
+    var bikeshareClient: BikeshareClient? {
+        guard let id = currentRegion?.regionIdentifier, let system = BikeshareSystem.system(forRegionIdentifier: id) else { return nil }
+        return BikeshareClient(system: system, dataLoader: URLSession.shared)
+    }
 
     var userAlarms: [Alarm] { userDataStore.alarms }
     func addAlarm(_ alarm: Alarm) { userDataStore.add(alarm: alarm) }
@@ -210,5 +217,6 @@ final class PreviewStopViewModelEnvironment: StopViewModelEnvironment {
     var currentRegion: Region? { nil }
     var currentRegionName: String? { nil }
     var isCellularDataRestricted: Bool { false }
+    var bikeshareClient: BikeshareClient? { nil }
 }
 #endif
