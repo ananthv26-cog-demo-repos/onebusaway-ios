@@ -16,8 +16,14 @@ nonisolated struct BikeshareSystem: Equatable, Sendable {
     let name: String
     /// The directory holding `station_information.json` and `station_status.json`.
     let feedBaseURL: URL
+    /// Where to send a rider when a dock publishes no unlock link.
+    let appStoreURL: URL
 
-    static let citiBike = BikeshareSystem(name: "Citi Bike", feedBaseURL: URL(string: "https://gbfs.lyft.com/gbfs/2.3/bkn/en/")!)
+    static let citiBike = BikeshareSystem(
+        name: "Citi Bike",
+        feedBaseURL: URL(string: "https://gbfs.lyft.com/gbfs/2.3/bkn/en/")!,
+        appStoreURL: URL(string: "https://apps.apple.com/app/id641194843")!
+    )
 
     /// The bikeshare system covering an OBA region, if there is one.
     static func system(forRegionIdentifier id: RegionIdentifier) -> BikeshareSystem? {
