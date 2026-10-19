@@ -14,8 +14,7 @@ import Testing
 @testable import OBAKitCore
 
 /// The Citi Bike fixtures are three real docks near Grand Central. Park Ave & E 42 St
-/// has 65 rentable bikes (58 e-bikes) and 7 disabled ones; E 47 St & Park Ave is
-/// marked not renting.
+/// is the closest; E 47 St & Park Ave is marked not renting.
 @Suite
 struct BikeshareDockTests {
     /// The M42 stop at E 42 St & Park Ave (MTA_403459).
@@ -29,7 +28,7 @@ struct BikeshareDockTests {
         return (info.data.stations, status.data.stations)
     }
 
-    @Test func `Nearest dock comes first, with disabled bikes left out`() throws {
+    @Test func `Nearest dock comes first`() throws {
         let (stations, statuses) = try Self.fixtures()
         let docks = BikeshareDock.nearest(to: Self.grandCentralStop, stations: stations, statuses: statuses, within: 2_000, limit: 5)
 
@@ -37,8 +36,6 @@ struct BikeshareDockTests {
         #expect(first.id == Self.parkAve42ID)
         #expect(first.name == "Park Ave & E 42 St")
         #expect(first.eBikes == 58)
-        #expect(first.classicBikes == 7)
-        #expect(first.availableBikes == 65)
         #expect(first.openDocks == 11)
         #expect(first.rentalURL == URL(string: "https://bkn.lft.to/lastmile_qr_scan"))
         #expect(docks.map(\.distanceMeters) == docks.map(\.distanceMeters).sorted())

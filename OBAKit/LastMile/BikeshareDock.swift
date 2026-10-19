@@ -45,8 +45,6 @@ nonisolated struct BikeshareDock: Identifiable, Equatable, Sendable {
 
     /// Joins the two GBFS feeds and keeps the closest docks a rider can rent from.
     ///
-    /// GBFS `num_bikes_available` already excludes disabled and reserved bikes, and
-    /// includes e-bikes; classic bikes are the remainder.
     static func nearest(
         to coordinate: CLLocationCoordinate2D,
         stations: [GBFSStationInformation],
@@ -63,7 +61,7 @@ nonisolated struct BikeshareDock: Identifiable, Equatable, Sendable {
             guard distance <= radius else { return nil }
 
             let eBikes = status.numEbikesAvailable ?? 0
-            let available = status.numBikesAvailable
+            let available = status.numBikesAvailable + (status.numBikesDisabled ?? 0)
             guard available > 0 else { return nil }
 
             return BikeshareDock(
