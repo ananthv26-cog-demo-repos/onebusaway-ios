@@ -59,9 +59,11 @@ struct SheetNavigationControllerTests {
     @Test @MainActor func anUnpresentedSheetKeepsAutomaticVerticalBars() {
         // The presented half (`.disabled`) needs a window and a presentation, which a hosted
         // test can't drive on a vertical-bar device; this pins the pushed-onto-a-stack case.
+        #if OBA_SDK_27_1
         guard #available(iOS 27.1, *) else { return }
         let unpresented = SheetHostingController(rootView: EmptyView())
         #expect(unpresented.preferredVerticalBarBehavior == .automatic)
         #expect(SheetNavigationController().preferredVerticalBarBehavior == .automatic)
+        #endif
     }
 }

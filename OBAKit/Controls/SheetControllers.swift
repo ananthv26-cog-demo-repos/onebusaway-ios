@@ -30,6 +30,7 @@ import UIKit
 // those buttons are what fills the column.
 
 fileprivate extension UIViewController {
+#if OBA_SDK_27_1
     /// `.disabled` while presented. A controller pushed onto the window's own navigation stack
     /// stays `.automatic`, because its preference reaches the window and would lay the tab bar
     /// out horizontally.
@@ -37,41 +38,52 @@ fileprivate extension UIViewController {
     var sheetVerticalBarBehavior: UIVerticalBarBehavior {
         presentingViewController == nil ? .automatic : .disabled
     }
+#endif
 }
 
 extension View {
     /// The content of a SwiftUI `.sheet` with no bar items, which keeps its bars horizontal.
     @ViewBuilder
     func sheetKeepsBarsHorizontal() -> some View {
+        #if OBA_SDK_27_1
         if #available(iOS 27.1, *) {
             toolbarVerticalBehavior(.disabled)
         } else {
             self
         }
+        #else
+        self
+        #endif
     }
 }
 
 /// A hosting controller for a sheet with no bar items, which keeps its bars horizontal.
 class SheetHostingController<Content: View>: UIHostingController<Content> {
+#if OBA_SDK_27_1
     @available(iOS 27.1, *)
     override var preferredVerticalBarBehavior: UIVerticalBarBehavior {
         sheetVerticalBarBehavior
     }
+#endif
 }
 
 /// A navigation controller for a sheet, presented or embedded, which keeps its bars horizontal.
 class SheetNavigationController: UINavigationController {
+#if OBA_SDK_27_1
     @available(iOS 27.1, *)
     override var preferredVerticalBarBehavior: UIVerticalBarBehavior {
         sheetVerticalBarBehavior
     }
+#endif
 
     /// The sheet decides for all of its pages, so one that would choose differently can't
     /// put the column back as it is pushed.
+#if OBA_SDK_27_1
     @available(iOS 27.1, *)
     override var childForPreferredVerticalBarBehavior: UIViewController? {
         nil
     }
+#endif
 
     override func viewDidLoad() {
         super.viewDidLoad()
