@@ -21,10 +21,11 @@ final class StopBikeshareLoader {
     private var requestedStopID: StopID?
     private var lastLoadedAt: TimeInterval?
     private let minimumReloadInterval: TimeInterval
-    /// Monotonic seconds, so a wall-clock change can't stall reloads.
+    /// Monotonic seconds that keep counting through sleep (Darwin CLOCK_MONOTONIC),
+    /// so neither a wall-clock change nor a long sleep stalls reloads.
     private let now: () -> TimeInterval
 
-    init(minimumReloadInterval: TimeInterval = 60, now: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }, onLoad: @escaping ([BikeshareDock]) -> Void) {
+    init(minimumReloadInterval: TimeInterval = 60, now: @escaping () -> TimeInterval = { TimeInterval(clock_gettime_nsec_np(CLOCK_MONOTONIC)) / 1_000_000_000 }, onLoad: @escaping ([BikeshareDock]) -> Void) {
         self.minimumReloadInterval = minimumReloadInterval
         self.now = now
         self.onLoad = onLoad
