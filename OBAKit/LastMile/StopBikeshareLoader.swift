@@ -19,11 +19,12 @@ final class StopBikeshareLoader {
     /// The in-flight load; held for cancellation and so tests can await it.
     private(set) var task: Task<Void, Never>?
     private var requestedStopID: StopID?
-    private var lastLoadedAt: Date?
+    private var lastLoadedAt: TimeInterval?
     private let minimumReloadInterval: TimeInterval
-    private let now: () -> Date
+    /// Monotonic seconds, so a wall-clock change can't stall reloads.
+    private let now: () -> TimeInterval
 
-    init(minimumReloadInterval: TimeInterval = 60, now: @escaping () -> Date = Date.init, onLoad: @escaping ([BikeshareDock]) -> Void) {
+    init(minimumReloadInterval: TimeInterval = 60, now: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }, onLoad: @escaping ([BikeshareDock]) -> Void) {
         self.minimumReloadInterval = minimumReloadInterval
         self.now = now
         self.onLoad = onLoad
@@ -36,7 +37,7 @@ final class StopBikeshareLoader {
     func refresh(for stop: Stop, client: BikeshareClient?) {
         if stop.id == requestedStopID {
             if lastLoadedAt == nil { return } // first load still in flight
-            if let lastLoadedAt, now().timeIntervalSince(lastLoadedAt) < minimumReloadInterval { return }
+            if let lastLoadedAt, now() - lastLoadedAt < minimumReloadInterval { return }
         }
         task?.cancel()
         requestedStopID = stop.id

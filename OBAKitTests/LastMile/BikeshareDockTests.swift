@@ -94,7 +94,7 @@ final class StopBikeshareLoaderTests: OBATestCase {
         loader.mock(data: Fixtures.loadData(file: "gbfs_citibike_station_status.json")) { $0.url?.lastPathComponent == "station_status.json" }
         let client = BikeshareClient(system: .citiBike, dataLoader: loader)
 
-        var clock = Date(timeIntervalSince1970: 0)
+        var clock: TimeInterval = 0
         var loads = 0
         let subject = StopBikeshareLoader(now: { clock }) { _ in loads += 1 }
 
@@ -102,12 +102,12 @@ final class StopBikeshareLoaderTests: OBATestCase {
         await subject.task?.value
         subject.refresh(for: stop, client: client)
         await subject.task?.value
-        clock.addTimeInterval(30)
+        clock += 30
         subject.refresh(for: stop, client: client)
         await subject.task?.value
         #expect(loads == 1)
 
-        clock.addTimeInterval(31)
+        clock += 31
         subject.refresh(for: stop, client: client)
         await subject.task?.value
         #expect(loads == 2)
