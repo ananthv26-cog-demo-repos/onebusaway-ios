@@ -116,8 +116,12 @@ extension UITraitCollection {
     /// vertical column on the side of the display, as on iPhone Duo. Reports the
     /// system's preferred edge whether or not a bar is showing.
     var presentsBarsVertically: Bool {
+        #if OBA_SDK_27_1
         guard #available(iOS 27.1, *) else { return false }
         return verticalBarEdge != .unspecified
+        #else
+        return false
+        #endif
     }
 }
 
@@ -125,9 +129,11 @@ extension UIViewController {
     /// Calls `handler` when the traits behind `presentsBarsVertically` change.
     /// Does nothing before iOS 27.1, where bars are never vertical.
     func registerForVerticalBarChanges(_ handler: @escaping () -> Void) {
+        #if OBA_SDK_27_1
         guard #available(iOS 27.1, *) else { return }
         registerForTraitChanges(UITraitCollection.systemTraitsAffectingVerticalBarEdge) { (_: UIViewController, _) in
             handler()
         }
+        #endif
     }
 }
