@@ -73,6 +73,13 @@ class StopViewModel: ObservableObject {
     @Published private(set) var onDemandServices: [OnDemandService] = []
     private(set) lazy var onDemandLoader = StopOnDemandServicesLoader { [weak self] in self?.onDemandServices = $0 }
 
+    /// Bikeshare docks near this stop, for the last-mile card; see `StopBikeshareLoader`.
+    @Published private(set) var nearbyDocks: [BikeshareDock] = []
+    private(set) lazy var bikeshareLoader = StopBikeshareLoader { [weak self] in self?.nearbyDocks = $0 }
+
+    /// The bikeshare system behind `nearbyDocks`, or `nil` where the region has none.
+    var bikeshareSystem: BikeshareSystem? { environment.bikeshareClient?.system }
+
     /// `true` while a network request is in-flight.
     @Published private(set) var isLoading = false
 
@@ -381,6 +388,7 @@ class StopViewModel: ObservableObject {
             lastUpdated = nil
             updateStatus()
             onDemandLoader.clear()
+            bikeshareLoader.clear()
 
             // With a bookmark behind it, a server that has no stop at this ID is the
             // broken-bookmark path: the page explains itself and offers a way out, and
@@ -429,6 +437,7 @@ class StopViewModel: ObservableObject {
         }
         stopArrivals = arrivals
         onDemandLoader.refresh(for: stop, apiService: environment.apiService)
+        bikeshareLoader.refresh(for: stop, client: environment.bikeshareClient)
         rebuildAlarmIndex()
         recomputeCurrentSurvey()
         recordReviewSuccessIfNeeded(arrivals: arrivals)

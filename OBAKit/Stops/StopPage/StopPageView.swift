@@ -80,6 +80,8 @@ struct StopPageNavigationHandler {
     /// Dismisses the sheet (its header's close button). No-op in the pushed presentation, which
     /// leaves instead through the navigation bar's back button.
     let closeSheet: () -> Void
+    /// Opens the operator's unlock link for a dock on the last-mile card.
+    var openBikeshareDock: (BikeshareDock) -> Void = { _ in }
 }
 
 /// Thin hosting wrapper for `StopPageView`. Its only job is to apply

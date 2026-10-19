@@ -148,6 +148,11 @@ packages:
     # (Package.swift has them too) so OBAKitTests, which uses each directly, can
     # link them. Xcode resolves each pair of declarations to the same package
     # and builds it once.
+    # Lyft's touch synthesis for OBAKitTests. Pinned to a main commit: the last
+    # tag (1.0.0) predates its async, Swift 6 API.
+    Hammer:
+        url: https://github.com/lyft/Hammer.git
+        revision: d29edcc076cdeb4746b4ef0488766de94c108aab
     GRDB:
         url: https://github.com/groue/GRDB.swift.git
         minorVersion: 7.11.0

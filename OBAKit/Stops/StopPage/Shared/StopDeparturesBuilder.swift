@@ -48,6 +48,8 @@ struct StopDeparturesBuilder {
             stopID: viewModel.stopID,
             serviceAlerts: viewModel.stopArrivals?.serviceAlerts ?? [],
             onDemandServices: viewModel.onDemandServices,
+            nearbyDocks: viewModel.nearbyDocks,
+            bikeshareSystemName: viewModel.bikeshareSystem?.name ?? "",
             sortType: viewModel.stopPreferences.sortType,
             walkMinutes: walkTime?.walkMinutes,
             // Read straight off the view model, unlike `walkTime`: it has no
@@ -76,6 +78,7 @@ struct StopDeparturesBuilder {
             onDonationClose: hideDonation,
             onSelectAlert: navigation.showAlertDetail,
             onSelectOnDemandService: navigation.showOnDemandService,
+            onSelectBikeshareDock: navigation.openBikeshareDock,
             onChangeMode: change(sortType:),
             onTogglePast: togglePast,
             onToggleRoute: toggleExpandedRoute(_:),

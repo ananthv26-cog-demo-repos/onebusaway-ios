@@ -27,6 +27,9 @@ struct StopDeparturesSections: View {
     let stopID: StopID
     let serviceAlerts: [ServiceAlert]
     let onDemandServices: [OnDemandService]
+    /// The last-mile card's docks and their system's name; empty hides the card.
+    var nearbyDocks: [BikeshareDock] = []
+    var bikeshareSystemName: String = ""
     let sortType: StopSort
     let walkMinutes: Int?
     /// Whether `walkMinutes` was computed at bike speed — the chronological
@@ -59,6 +62,7 @@ struct StopDeparturesSections: View {
     let onDonationClose: () -> Void
     let onSelectAlert: (ServiceAlert) -> Void
     let onSelectOnDemandService: (OnDemandService) -> Void
+    var onSelectBikeshareDock: (BikeshareDock) -> Void = { _ in }
     let onChangeMode: (StopSort) -> Void
     let onTogglePast: () -> Void
     let onToggleRoute: (RouteID) -> Void
@@ -149,6 +153,12 @@ struct StopDeparturesSections: View {
         // shows it above its empty state.
         if !onDemandServices.isEmpty {
             OnDemandServicesSection(services: onDemandServices, onSelect: onSelectOnDemandService)
+        }
+
+        // Before the departures, so a rider deciding whether to wait for the bus
+        // sees the bike option without scrolling.
+        if !nearbyDocks.isEmpty {
+            LastMileSection(systemName: bikeshareSystemName, docks: nearbyDocks, onSelect: onSelectBikeshareDock)
         }
 
         // The two states the row itself offers a "show everything" button for —

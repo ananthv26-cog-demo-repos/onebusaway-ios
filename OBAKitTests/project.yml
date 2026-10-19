@@ -38,6 +38,7 @@ targets:
         embed: false
       - package: SwiftProtobuf
         embed: false
+      - package: Hammer
     info:
       path: "Info.plist"
       properties: {}
