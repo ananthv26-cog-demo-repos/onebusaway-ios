@@ -144,7 +144,7 @@ final class StopPageActionPresenter: NSObject, ObservableObject {
             toggleProximityAlert: stop.toggleProximityAlert,
             closeSheet: closeSheet,
             openBikeshareDock: { [weak self] dock in
-                guard let self, let url = dock.rentalURL ?? viewModel.bikeshareSystem?.feedBaseURL else { return }
+                guard let self, let url = dock.rentalURL ?? viewModel.bikeshareSystem?.appStoreURL else { return }
                 self.application.open(url, options: [:], completionHandler: nil)
             }
         )

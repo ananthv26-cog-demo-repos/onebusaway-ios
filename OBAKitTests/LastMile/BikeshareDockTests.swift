@@ -68,3 +68,45 @@ struct BikeshareDockTests {
         #expect(BikeshareSystem.system(forRegionIdentifier: 1) == nil)
     }
 }
+
+@MainActor
+@Suite(.serialized)
+final class StopBikeshareLoaderTests: OBATestCase {
+    @Test func `Same stop reloads once the feed TTL has passed, not before`() async throws {
+        let stop = try Fixtures.loadSomeStops().first!
+        // Move the fixture docks onto the stop so the load returns docks: an
+        // empty result is retried on the next refresh by design.
+        var info = try #require(JSONSerialization.jsonObject(with: Fixtures.loadData(file: "gbfs_citibike_station_information.json")) as? [String: Any])
+        var data = try #require(info["data"] as? [String: Any])
+        data["stations"] = (data["stations"] as? [[String: Any]] ?? []).map { station in
+            var station = station
+            station["lat"] = stop.coordinate.latitude
+            station["lon"] = stop.coordinate.longitude
+            return station
+        }
+        info["data"] = data
+
+        let loader = MockDataLoader(testName: "StopBikeshareLoader")
+        loader.mock(data: try JSONSerialization.data(withJSONObject: info)) { $0.url?.lastPathComponent == "station_information.json" }
+        loader.mock(data: Fixtures.loadData(file: "gbfs_citibike_station_status.json")) { $0.url?.lastPathComponent == "station_status.json" }
+        let client = BikeshareClient(system: .citiBike, dataLoader: loader)
+
+        var clock = Date(timeIntervalSince1970: 0)
+        var loads = 0
+        let subject = StopBikeshareLoader(now: { clock }) { _ in loads += 1 }
+
+        subject.refresh(for: stop, client: client)
+        await subject.task?.value
+        subject.refresh(for: stop, client: client)
+        await subject.task?.value
+        clock.addTimeInterval(30)
+        subject.refresh(for: stop, client: client)
+        await subject.task?.value
+        #expect(loads == 1)
+
+        clock.addTimeInterval(31)
+        subject.refresh(for: stop, client: client)
+        await subject.task?.value
+        #expect(loads == 2)
+    }
+}
